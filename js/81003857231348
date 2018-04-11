@@ -1,7 +1,24 @@
 var qsProxy = {};
 function FrameBuilder(formId,appendTo,initialHeight,iframeCode,title,embedStyleJSON){this.formId=formId;this.initialHeight=initialHeight;this.iframeCode=iframeCode;this.frame=null;this.timeInterval=200;this.appendTo=appendTo||false;this.formSubmitted=0;this.frameMinWidth='100%';this.defaultHeight='';this.init=function(){this.embedURLHash=this.getMD5(window.location.href);if(embedStyleJSON&&(embedStyleJSON[this.embedURLHash]&&embedStyleJSON[this.embedURLHash]['inlineStyle']['embedWidth'])){this.frameMinWidth=embedStyleJSON[this.embedURLHash]['inlineStyle']['embedWidth']+'px';}
 if(embedStyleJSON&&(embedStyleJSON[this.embedURLHash])){if(embedStyleJSON[this.embedURLHash]['inlineStyle']&&embedStyleJSON[this.embedURLHash]['inlineStyle']['embedHeight']){this.defaultHeight='data-frameHeight="'+embedStyleJSON[this.embedURLHash]['inlineStyle']['embedHeight']+'"';}}
-this.createFrame();this.addFrameContent(this.iframeCode);};this.createFrame=function(){var tmp_is_ie=!!window.ActiveXObject;this.iframeDomId=document.getElementById(this.formId)?this.formId+'_'+new Date().getTime():this.formId;var htmlCode="<"+"iframe title=\""+title.replace(/[\\"']/g,'\\$&').replace(/&amp;/g,'&')+"\" src=\"\" allowtransparency=\"true\" allow=\"geolocation; microphone; camera\" allowfullscreen=\"true\" name=\""+this.formId+"\" id=\""+this.iframeDomId+"\" style=\"width: 10px; min-width:"+this.frameMinWidth+"; display: block; overflow: hidden; height:"+this.initialHeight+"px; border: none;\" scrolling=\"no\""+this.defaultHeight+"></if"+"rame>";if(this.appendTo===false){document.write(htmlCode);}else{var tmp=document.createElement('div');tmp.innerHTML=htmlCode;var a=this.appendTo;document.getElementById(a).appendChild(tmp.firstChild);}
+this.createFrame();this.addFrameContent(this.iframeCode);};this.createFrame=function(){var tmp_is_ie=!!window.ActiveXObject;this.iframeDomId=document.getElementById(this.formId)?this.formId+'_'+new Date().getTime():this.formId;
+var htmlCode1="<"+"iframe title=\""+title.replace(/[\\"']/g,'\\$&').replace(/&amp;/g,'&')+"\" src=\"\" allowtransparency=\"true\" allow=\"geolocation; microphone; camera\" allowfullscreen=\"true\" name=\""+this.formId+"\" id=\""+this.iframeDomId+"\" style=\"width: 10px; min-width:"+this.frameMinWidth+"; display: block; overflow: hidden; height:"+this.initialHeight+"px; border: none;\" scrolling=\"no\""+this.defaultHeight+"></if"+"rame>";
+
+ var htmlCode = document.createElement("iframe");
+ htmlCode.setAttribute("title", title.replace(/[\\"']/g,'\\$&').replace(/&amp;/g,'&'));
+ htmlCode.setAttribute("src","");
+ htmlCode.setAttribute("allowtransparency","true");
+ htmlCode.setAttribute("allow","geolocation; microphone; camera");
+ htmlCode.setAttribute("allowfullscreen","true");
+ htmlCode.setAttribute("name",this.formId);
+ htmlCode.setAttribute("id",this.iframeDomId);
+
+ 
+ 
+if(this.appendTo===false){
+	document.body.appendChild(htmlCode);
+}
+else{var tmp=document.createElement('div');tmp.innerHTML=htmlCode;var a=this.appendTo;document.getElementById(a).appendChild(tmp.firstChild);}
 this.frame=document.getElementById(this.iframeDomId);if(tmp_is_ie===true){try{var iframe=this.frame;var doc=iframe.contentDocument?iframe.contentDocument:(iframe.contentWindow.document||iframe.document);doc.open();doc.write("");}
 catch(err){this.frame.src="javascript:void((function(){document.open();document.domain=\'"+this.getBaseDomain()+"\';document.close();})())";}}
 this.addEvent(this.frame,'load',this.bindMethod(this.setTimer,this));var self=this;if(window.chrome!==undefined){this.frame.onload=function(){try{var doc=this.contentWindow.document;var _jotform=this.contentWindow.JotForm;if(doc!==undefined){var form=doc.getElementById(""+self.iframeDomId);self.addEvent(form,"submit",function(){if(_jotform.validateAll()){self.formSubmitted=1;}});}}catch(e){}}}};this.addEvent=function(obj,type,fn){if(obj.attachEvent){obj["e"+type+fn]=fn;obj[type+fn]=function(){obj["e"+type+fn](window.event);};obj.attachEvent("on"+type,obj[type+fn]);}
